@@ -2,8 +2,10 @@ package com.hiten.billing_software.entity;
 
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.sql.Timestamp;
@@ -12,6 +14,8 @@ import java.sql.Timestamp;
 @Table(name="tbl_category")
 @Builder
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class CategoryEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,7 +34,8 @@ public class CategoryEntity {
     @CreationTimestamp
     @Column(updatable = false)
     private Timestamp createdAt;
-     private Timestamp updatedAt;
+    @CreationTimestamp
+    private Timestamp updatedAt;
 
 
 }
