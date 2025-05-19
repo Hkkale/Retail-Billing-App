@@ -5,8 +5,10 @@ import com.hiten.billing_software.io.CategoryRequest;
 import com.hiten.billing_software.io.CategoryResponse;
 import com.hiten.billing_software.repository.CategoryRepository;
 import com.hiten.billing_software.service.CategoryService;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.UUID;
@@ -15,17 +17,22 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+
+
 public class CategoryServiceImpl implements CategoryService {
 
     private  final CategoryRepository categoryRepository;
+    private final FileServiceImpl fileService;
 
 
 
 
 
     @Override
-    public CategoryResponse add(CategoryRequest request) {
+    public CategoryResponse add(CategoryRequest request, MultipartFile file) {
+        String imgUrl= fileService.uploadImage(file);
         CategoryEntity newCategory= convertToEntity(request);
+        newCategory.setImgUrl(imgUrl);
         newCategory = categoryRepository.save(newCategory);
         return convertToResponse(newCategory);
     }
@@ -42,6 +49,8 @@ public class CategoryServiceImpl implements CategoryService {
     public void delete(String categoryId) {
        CategoryEntity existingCategory = categoryRepository.findByCategoryId(categoryId)
                 .orElseThrow(()-> new RuntimeException("Category not found"+ categoryId));
+
+       fileService.delete(existingCategory.getImgUrl());
 
        categoryRepository.delete(existingCategory);
     }
